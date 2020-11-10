@@ -1,0 +1,68 @@
+{% include 'network/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+      <div class="container" id="posts-view">
+        
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <h3 class="navbar-brand">{{user.username}}'s profile</h3>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    Followers: {{user_details.noFollowers}}
+                  </li>
+                  <li class="nav-item">
+                    Following: {{user_details.noFollowing}}
+                  </li>
+                </ul>
+                {% if to_follow  %}
+                    <div class="container" id="profile-view">
+                        <form method="POST" action="{% url 'network:follow_user' user_details.username %}">
+                            {% csrf_token %}
+                            <input type="submit" value="{{to_follow}}"></input>
+                        </form>
+                    </div>
+                {% endif %}
+
+            </div>
+        </nav>
+
+        {% for post in page%}
+            {% block post_block %}
+            {% include 'network/post.html' %}
+            {% endblock %}
+        {% empty %}
+            <p>Nothing here</p>
+        {% endfor %}
+        
+          <!-- <script>
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var recipient = button.data('whatever') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text('New message to ' + recipient)
+                modal.find('.modal-body input').val(recipient)
+              })
+            </script> -->
+            
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">Previous</a></li>
+                {% endif %}
+                {% if page.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav> 
+        
+    </div>
+{% endblock %}
